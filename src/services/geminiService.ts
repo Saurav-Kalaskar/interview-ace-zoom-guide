@@ -270,9 +270,7 @@ export const createFeedbackAnalysisPrompt = (
     4. Areas for improvement (at least 3)
     5. A brief summary of overall performance
     
-    Format your response as a JSON object like this:
-    
-    ```json
+    Format your response as a JSON object with the following structure:
     {
       "overallScore": 80,
       "metrics": [
@@ -283,6 +281,5 @@ export const createFeedbackAnalysisPrompt = (
       "improvements": ["Improvement 1", "Improvement 2", "Improvement 3"],
       "summary": "Overall summary of performance and key recommendations"
     }
-    ```
   `;
 };
