@@ -1,4 +1,3 @@
-
 import { InterviewSetupData } from "../components/InterviewSetup";
 
 // Mock interview questions data
@@ -8,7 +7,13 @@ const behavioralQuestions = [
   "Tell me about a time when you had to adapt to a significant change at work or school.",
   "Describe a project where you demonstrated leadership skills.",
   "Tell me about a time when you failed. What did you learn from the experience?",
-  "Describe a situation where you had to make an important decision with limited information."
+  "Describe a situation where you had to make an important decision with limited information.",
+  "Tell me about a time when you had to handle multiple competing priorities. How did you organize your work?",
+  "Can you describe a situation where you had to influence someone without having direct authority?",
+  "Tell me about a time when you received difficult feedback. How did you respond?",
+  "Describe a situation where you had to go above and beyond your normal responsibilities.",
+  "Tell me about a time when you had to resolve a conflict between team members.",
+  "Describe a situation where you had to learn a new technology or skill quickly."
 ];
 
 const technicalQuestions = [
@@ -17,7 +22,13 @@ const technicalQuestions = [
   "Explain the concept of asynchronous programming and when you would use it.",
   "What strategies would you use to ensure your code is maintainable and easy to understand?",
   "How would you approach debugging a complex issue in production?",
-  "Describe your experience with version control systems and your workflow."
+  "Describe your experience with version control systems and your workflow.",
+  "Explain the differences between REST and GraphQL APIs and when you'd use each.",
+  "How would you implement authentication and authorization in a web application?",
+  "Describe your approach to testing code and what types of tests you typically write.",
+  "How would you optimize the performance of a React application?",
+  "Explain the concept of database indexing and when you would use it.",
+  "Describe how you would implement real-time features in a web application."
 ];
 
 interface FeedbackMetric {
