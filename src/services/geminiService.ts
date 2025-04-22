@@ -1,3 +1,4 @@
+
 import { InterviewSetupData } from "../components/InterviewSetup";
 import { InterviewQuestion, FeedbackData } from "./interviewService";
 
@@ -18,11 +19,14 @@ interface GeminiRequestOptions {
 }
 
 /**
- * Get the Gemini API key - now uses a hardcoded value
+ * Get the Gemini API key from localStorage
  */
 const getApiKey = (): string => {
-  // Replace "YOUR_FIXED_API_KEY" with your actual Gemini API key
-  return "AIzaSyClyF61ufXTTUAo5wayNYV10fYdzg8r1kU";
+  const apiKey = localStorage.getItem("geminiApiKey");
+  if (!apiKey) {
+    throw new Error("Gemini API key not found. Please add your API key in the settings.");
+  }
+  return apiKey;
 };
 
 /**
@@ -42,9 +46,31 @@ export const generateQuestionsWithGemini = async (
     // For development/demo purposes, use the mock implementation
     const { generateInterviewQuestions } = await import("./interviewService");
     return generateInterviewQuestions(setupData);
+    
+    // Uncomment this to use the real Gemini API in production:
+    /*
+    const options: GeminiRequestOptions = {
+      model: "gemini-1.0-pro",
+      contents: [
+        {
+          role: "user",
+          parts: [{ text: prompt }]
+        }
+      ],
+      generationConfig: {
+        temperature: 0.7,
+        maxOutputTokens: 2048,
+        topP: 0.95,
+        topK: 40
+      }
+    };
+    
+    const response = await callGeminiAPI(apiKey, options);
+    return parseQuestionsFromResponse(response, setupData.interviewType);
+    */
   } catch (error) {
     console.error("Error generating questions:", error);
-    throw error;
+    throw new Error("Failed to generate interview questions");
   }
 };
 

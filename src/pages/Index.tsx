@@ -1,8 +1,13 @@
-import React, { useState } from "react";
+
+import React, { useState, useContext } from "react";
 import InterviewSetup, { InterviewSetupData } from "@/components/InterviewSetup";
 import InterviewQuestion from "@/components/InterviewQuestion";
 import FeedbackPanel from "@/components/FeedbackPanel";
+import ZoomIntegration from "@/components/ZoomIntegration";
+import ApiKeyInput from "@/components/ApiKeyInput";
+import ApiContext from "@/context/ApiContext";
 import { 
+  simulateZoomConnection,
   InterviewQuestion as IInterviewQuestion,
   FeedbackData
 } from "@/services/interviewService";
@@ -25,7 +30,9 @@ const Index = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<string[]>([]);
   const [feedback, setFeedback] = useState<FeedbackData | null>(null);
+  const [isZoomConnected, setIsZoomConnected] = useState(false);
   const { toast } = useToast();
+  const { geminiApiKey, setGeminiApiKey } = useContext(ApiContext);
 
   const handleStartInterview = async (data: InterviewSetupData) => {
     setSetupData(data);
@@ -105,6 +112,31 @@ const Index = () => {
     setStage(InterviewStage.SETUP);
   };
 
+  const connectToZoom = async () => {
+    // Show a loading toast
+    toast({
+      title: "Connecting to Zoom...",
+      description: "Please wait while we establish connection.",
+    });
+    
+    // Call the mock connection function
+    const connected = await simulateZoomConnection();
+    
+    if (connected) {
+      setIsZoomConnected(true);
+      toast({
+        title: "Connected to Zoom",
+        description: "Your interview audio will be processed through Zoom.",
+      });
+    } else {
+      toast({
+        title: "Connection Failed",
+        description: "Could not connect to Zoom. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b bg-card shadow-sm">
@@ -113,11 +145,23 @@ const Index = () => {
             <span className="text-interview-blue">Interview</span>
             <span>Prep Assistant</span>
           </h1>
+          <div className="text-sm text-muted-foreground">
+            Zoom Hackathon Project
+          </div>
         </div>
       </header>
 
       <main className="container py-8">
         <div className="space-y-8">
+          {!geminiApiKey && (
+            <ApiKeyInput 
+              onApiKeySubmit={setGeminiApiKey}
+              isKeySet={!!geminiApiKey} 
+            />
+          )}
+
+          <ZoomIntegration isConnected={isZoomConnected} onConnect={connectToZoom} />
+          
           {stage === InterviewStage.SETUP && (
             <InterviewSetup onStartInterview={handleStartInterview} />
           )}
@@ -141,7 +185,7 @@ const Index = () => {
 
       <footer className="py-6 border-t bg-secondary/30 mt-12">
         <div className="container text-center text-sm text-muted-foreground">
-          Interview Prep Assistant &copy; {new Date().getFullYear()}
+          Interview Prep Assistant &copy; 2025 | Zoom Hackathon Project
         </div>
       </footer>
     </div>
