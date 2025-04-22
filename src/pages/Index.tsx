@@ -11,11 +11,6 @@ import {
   analyzeFeedbackWithGemini
 } from "@/services/geminiService";
 import { useToast } from "@/components/ui/use-toast";
-import { 
-  fetchCompanySpecificQuestions, 
-  submitInterviewAnswers 
-} from "@/services/backendService";
-import config from "@/config";
 
 enum InterviewStage {
   SETUP,
@@ -38,16 +33,11 @@ const Index = () => {
     try {
       toast({
         title: "Generating Questions",
-        description: config.useBackend 
-          ? `Fetching ${data.interviewType} questions specific to ${data.company}...` 
-          : "Using AI to create custom questions based on your inputs...",
+        description: "Using AI to create custom questions based on your inputs...",
       });
       
-      // Generate questions using either Backend API or Gemini API
-      const generatedQuestions = config.useBackend
-        ? await fetchCompanySpecificQuestions(data)
-        : await generateQuestionsWithGemini(data);
-        
+      // Generate questions using Gemini API
+      const generatedQuestions = await generateQuestionsWithGemini(data);
       setQuestions(generatedQuestions);
       
       // Reset other state
@@ -65,9 +55,7 @@ const Index = () => {
     } catch (error) {
       toast({
         title: "Error",
-        description: config.useBackend
-          ? "Failed to fetch questions from backend. Please check your connection or try again."
-          : "Failed to generate interview questions. Please try again.",
+        description: "Failed to generate interview questions. Please try again.",
         variant: "destructive",
       });
     }
@@ -81,18 +69,12 @@ const Index = () => {
       // Show a processing toast when analyzing feedback
       toast({
         title: "Analyzing Responses",
-        description: config.useBackend
-          ? "Submitting your answers to our backend for analysis..."
-          : "Our AI is analyzing your interview performance...",
+        description: "Our AI is analyzing your interview performance...",
       });
       
       // If all questions are complete, generate feedback
       if (setupData) {
-        const analyzeFunction = config.useBackend
-          ? submitInterviewAnswers
-          : analyzeFeedbackWithGemini;
-          
-        analyzeFunction(answers, setupData, questions)
+        analyzeFeedbackWithGemini(answers, setupData, questions)
           .then(feedbackData => {
             setFeedback(feedbackData);
             setStage(InterviewStage.FEEDBACK);
@@ -131,11 +113,6 @@ const Index = () => {
             <span className="text-interview-blue">Interview</span>
             <span>Prep Assistant</span>
           </h1>
-          {config.useBackend && (
-            <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">
-              Connected to Backend
-            </span>
-          )}
         </div>
       </header>
 
